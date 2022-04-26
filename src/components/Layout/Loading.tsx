@@ -1,11 +1,10 @@
 import { FC } from "react";
 import { LoadingOverlay } from "@mantine/core";
+import { useLoading } from "../../hooks/useLoading";
 
-interface Props {
-  isLoading: boolean;
-}
+export const Loading: FC = () => {
+  const { isLoading } = useLoading();
 
-export const Loading: FC<Props> = ({ isLoading }: Props) => {
   return (
     <LoadingOverlay
       visible={isLoading}
