@@ -3,9 +3,9 @@ import { Group, Image, Paper, Text } from "@mantine/core";
 
 export const Navbar: FC = () => {
   return (
-    <Paper shadow={"md"} px={10}>
+    <Paper px={15} radius={0}>
       <Group position={"apart"}>
-        <Text size={"xl"} m="">
+        <Text size={"xl"} m="md">
           A melhor página de notícias
         </Text>
 

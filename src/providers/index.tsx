@@ -6,7 +6,7 @@ import { Loading } from "../components/Layout/Loading";
 
 export const GlobalProvider: PropsWithChildren<any> = ({ children }: any) => {
   return (
-    <MantineProvider>
+    <MantineProvider theme={{ colorScheme: "dark" }}>
       <NotificationsProvider>
         <LoadingProvider>
           {children}

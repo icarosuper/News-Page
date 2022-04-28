@@ -8,32 +8,35 @@ interface Props {
 }
 
 export const ArticleCard: FC<Props> = ({
-  article: { title, description, publishedAt, url, urlToImage, source },
+  article: { title, description, author, publishedAt, url, urlToImage, source },
 }) => {
   return (
     <Card
       component={"a"}
+      target={"_blank"}
       href={url}
       shadow={"md"}
-      my={10}
       px={20}
       radius={"md"}
     >
       <Stack spacing={10} align={"stretch"}>
-        <Text size={"lg"} mx={""}>
+        <Text size={"lg"} mx={0}>
           {title}
         </Text>
 
         <Group position={"apart"}>
-          <Group>
-            <Image
-              src={urlToImage}
-              width={25}
-              height={25}
-              radius={"xl"}
-              alt=""
-            />
-            <Text size={"md"}>{source.name}</Text>
+          <Group spacing={5}>
+            {urlToImage && (
+              <Image
+                src={urlToImage}
+                width={25}
+                height={25}
+                radius={"xl"}
+                alt=""
+              />
+            )}
+            <Text>{source.name}</Text>
+            {author && <Text>- {author}</Text>}
           </Group>
 
           <Text size={"md"}>{formatDate(publishedAt)}</Text>
@@ -41,9 +44,7 @@ export const ArticleCard: FC<Props> = ({
 
         <Text size={"sm"}>{description}</Text>
 
-        <Button fullWidth component={"a"} href={url}>
-          Continue lendo
-        </Button>
+        <Button fullWidth>Continue lendo</Button>
       </Stack>
     </Card>
   );
