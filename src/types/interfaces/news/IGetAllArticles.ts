@@ -1,9 +1,7 @@
-export interface IGetAllArticles {
-  q?: string;
+import { IAbstractGetArticles } from "./IAbstractGetArticles";
 
+export interface IGetAllArticles extends IAbstractGetArticles {
   searchIn?: "title" | "description" | "content";
-
-  sources?: string;
 
   domains?: string;
   excludeDomains?: string;
@@ -14,8 +12,4 @@ export interface IGetAllArticles {
   language?: string;
 
   sortBy?: "relevancy" | "popularity" | "publishedAt";
-
-  pageSize?: number;
-
-  page?: number;
 }
