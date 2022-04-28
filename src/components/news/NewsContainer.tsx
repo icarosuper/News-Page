@@ -1,64 +1,68 @@
-import { FC, useEffect, useRef, useState } from "react";
-import { TArticle } from "../../types/types";
+import { FC, useCallback, useEffect, useRef } from "react";
 import { Pagination, ScrollArea, Stack } from "@mantine/core";
 import { ArticleCard } from "./ArticleCard";
-import { NewsRepository } from "../../repositories/NewsRepository";
-import { useLoading } from "../../hooks/useLoading";
+import { useNews } from "../../hooks/useNews";
+import { useSetState } from "@mantine/hooks";
+import { IGetAllArticles, IGetTopArticles } from "../../types/interfaces";
 
 export const NewsContainer: FC = () => {
-  const { openLoading, closeLoading } = useLoading();
-  const client = new NewsRepository();
-  const pageSize = 10;
-
-  const [articles, setArticles] = useState<TArticle[]>([]);
-  const [pages, setPages] = useState(0);
-
   const viewport = useRef<HTMLDivElement>();
 
-  const getArticles = async (page: number) => {
-    openLoading();
+  const { articles, getTopArticles, getAllArticles, totalPages } = useNews();
 
-    const response = await client.findTop({
-      country: "br",
-      pageSize,
-      page,
-    });
+  const [topProps, setTopProps] = useSetState<IGetTopArticles>({});
+  const [allProps, setAllProps] = useSetState<IGetAllArticles>({});
 
-    setPages(Math.ceil(response.totalResults / pageSize));
-    setArticles(response.articles);
+  const shouldSearchAll = useCallback(
+    () =>
+      allProps.searchIn ||
+      allProps.domains ||
+      allProps.excludeDomains ||
+      allProps.from ||
+      allProps.to ||
+      allProps.language ||
+      allProps.sortBy,
+    []
+  );
 
+  const scrollToTop = () => {
     viewport.current?.scrollTo({ top: 0, behavior: "smooth" });
-
-    closeLoading();
   };
 
   useEffect(() => {
-    (async () => await getArticles(1))();
-  }, []);
+    (async () => {
+      if (shouldSearchAll()) await getAllArticles(allProps);
+      else await getTopArticles(topProps);
+
+      scrollToTop();
+    })();
+  }, [allProps, topProps, getAllArticles, getTopArticles, shouldSearchAll]);
 
   return (
-    <Stack align={"center"}>
+    <Stack align={"center"} sx={{ height: "100%" }} spacing={"sm"} py={"sm"}>
       <ScrollArea
-        style={{ height: "80vh", width: "40%" }}
+        sx={{ width: "50%" }}
         p={10}
         type="always"
         offsetScrollbars
         // @ts-ignore
         viewportRef={viewport}
       >
-        {articles.map((article, i) => (
-          <ArticleCard article={article} key={i} />
-        ))}
+        <Stack spacing={"sm"}>
+          {articles.map((article, i) => (
+            <ArticleCard article={article} key={i} />
+          ))}
+        </Stack>
       </ScrollArea>
 
       <Pagination
         size="xl"
         withEdges
-        total={pages}
+        total={totalPages}
         boundaries={2}
         siblings={2}
         initialPage={1}
-        onChange={async (page) => await getArticles(page)}
+        onChange={(page) => setTopProps({ page })}
       />
     </Stack>
   );
