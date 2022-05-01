@@ -18,7 +18,6 @@ export const ArticleCard: FC<Props> = ({
       shadow={"md"}
       px={20}
       radius={"md"}
-      sx={{ width: "100%" }}
     >
       <Stack spacing={"sm"} align={"stretch"}>
         <Text size={"lg"} mx={0}>
@@ -27,7 +26,7 @@ export const ArticleCard: FC<Props> = ({
 
         <Group position={"apart"}>
           <Group spacing={5}>
-            {urlToImage && (
+            {urlToImage && urlToImage !== "null" && (
               <Image
                 src={urlToImage}
                 width={25}

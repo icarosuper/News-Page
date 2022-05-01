@@ -28,7 +28,7 @@ export const Articles: FC = () => {
           </Text>
         ) : (
           articles.map((article, i) => (
-            <ArticleCard article={article} key={i} /> // todo Deixar card 100% width sempre
+            <ArticleCard article={article} key={i} />
           ))
         )}
       </Stack>

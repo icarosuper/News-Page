@@ -74,8 +74,6 @@ export const NewsProvider: FC = ({ children }: any) => {
         );
 
         setArticles(response.articles);
-      } catch (e) {
-        // todo fazer algo?
       } finally {
         closeLoading();
       }
@@ -100,8 +98,6 @@ export const NewsProvider: FC = ({ children }: any) => {
         );
 
         setArticles(response.articles);
-      } catch (e) {
-        // todo fazer algo?
       } finally {
         closeLoading();
       }
