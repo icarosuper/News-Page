@@ -9,36 +9,14 @@ import React, {
 import { useLoading } from "../hooks/useLoading";
 import { NewsRepository } from "../repositories/NewsRepository";
 import { TArticle } from "../types/types";
-import { IGetAllArticles, IGetTopArticles } from "../types/interfaces";
+import {
+  IGetAllArticles,
+  IGetTopArticles,
+  INewsContext,
+} from "../types/interfaces";
 import { Source } from "../types/types/news/Source";
 import { useInputState, useSetState } from "@mantine/hooks";
-
-interface INewsContext {
-  sources: Source[];
-  totalPages: number;
-  articles: TArticle[];
-
-  page: number;
-  setPage: (page: number) => void;
-
-  topProps: IGetTopArticles;
-  allProps: IGetAllArticles;
-  setTopProps: (
-    statePartial:
-      | Partial<IGetTopArticles>
-      | ((currentState: IGetTopArticles) => Partial<IGetTopArticles>)
-  ) => void;
-  setAllProps: (
-    statePartial:
-      | Partial<IGetAllArticles>
-      | ((currentState: IGetAllArticles) => Partial<IGetAllArticles>)
-  ) => void;
-
-  search: string;
-  setSearch: (
-    value: string | React.ChangeEvent<any> | null | undefined
-  ) => void;
-}
+import { Languages } from "../types/objects_types";
 
 export const NewsContext = createContext<INewsContext>({} as INewsContext);
 
@@ -46,27 +24,29 @@ export const NewsProvider: FC = ({ children }: any) => {
   const { openLoading, closeLoading } = useLoading();
   const repository = useMemo(() => new NewsRepository(), []);
 
-  const pageSize = 10;
-
+  const [sources, setSources] = useState<Source[]>([]);
   const [articles, setArticles] = useState<TArticle[]>([]);
   const [totalPages, setTotalPages] = useState(0);
-  const [page, setPage] = useState(1);
-  const [sources, setSources] = useState<Source[]>([]);
-  const [topProps, setTopProps] = useSetState<IGetTopArticles>({});
-  const [allProps, setAllProps] = useSetState<IGetAllArticles>({});
-  const [q, setSearch] = useInputState("");
 
-  const shouldSearchAll = useCallback(
-    () =>
-      allProps.searchIn ||
-      allProps.domains ||
-      allProps.excludeDomains ||
-      allProps.from ||
-      allProps.to ||
-      allProps.language ||
-      allProps.sortBy,
-    []
-  );
+  const [q, setSearch] = useInputState("");
+  const [page, setPage] = useState(1);
+  const [language, setLanguage] = useInputState(Languages.PT.value);
+  const [selectedSources, setSelectedSources] = useState<string[]>([]);
+
+  const [topProps, setTopProps] = useSetState<IGetTopArticles>({
+    pageSize: 10,
+  });
+  const [allProps, setAllProps] = useSetState<IGetAllArticles>({
+    pageSize: 10,
+  });
+
+  const shouldSearchAll = () =>
+    !!allProps.searchIn ||
+    !!allProps.domains ||
+    !!allProps.excludeDomains ||
+    !!allProps.from ||
+    !!allProps.to ||
+    !!allProps.sortBy;
 
   const getSources = useCallback(async () => {
     try {
@@ -79,17 +59,18 @@ export const NewsProvider: FC = ({ children }: any) => {
   }, [repository]);
 
   const getTopArticles = useCallback(
-    async (props?: IGetTopArticles) => {
+    async (props: IGetTopArticles) => {
       try {
         openLoading();
 
         const response = await repository.findTop({
-          country: "br", // todo Adicionar localização por IP
-          pageSize,
           ...props,
+          language: props.sources?.length !== 0 ? undefined : props.language,
         });
 
-        setTotalPages(Math.ceil(response.totalResults / pageSize));
+        setTotalPages(
+          Math.ceil(response.totalResults / (props?.pageSize || 1))
+        );
 
         setArticles(response.articles);
       } catch (e) {
@@ -102,17 +83,18 @@ export const NewsProvider: FC = ({ children }: any) => {
   );
 
   const getAllArticles = useCallback(
-    async (props?: IGetAllArticles) => {
+    async (props: IGetAllArticles) => {
       try {
         openLoading();
 
         const response = await repository.findAll({
-          pageSize,
-          language: "br", // todo Adicionar enum de linguas e localização por IP,
           ...props,
+          language: props.sources?.length !== 0 ? undefined : props.language,
         });
 
-        setTotalPages(Math.ceil(response.totalResults / pageSize));
+        setTotalPages(
+          Math.ceil(response.totalResults / (props?.pageSize || 1))
+        );
 
         setArticles(response.articles);
       } catch (e) {
@@ -130,10 +112,24 @@ export const NewsProvider: FC = ({ children }: any) => {
 
   useEffect(() => {
     (async () => {
-      if (shouldSearchAll()) await getAllArticles({ ...allProps, q, page });
-      else await getTopArticles({ ...topProps, q, page });
+      if (shouldSearchAll()) {
+        await getAllArticles({
+          ...allProps,
+          q,
+          page,
+          language,
+          sources: selectedSources,
+        });
+      } else
+        await getTopArticles({
+          ...topProps,
+          q,
+          page,
+          language,
+          sources: selectedSources,
+        });
     })();
-  }, [allProps, topProps, q, page]);
+  }, [allProps, topProps, q, page, language, selectedSources]);
 
   useEffect(() => setPage(1), [allProps, topProps, q]);
 
@@ -151,6 +147,10 @@ export const NewsProvider: FC = ({ children }: any) => {
         articles,
         sources,
         search: q,
+        language,
+        setLanguage,
+        selectedSources,
+        setSelectedSources,
       }}
     >
       {children}
