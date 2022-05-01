@@ -1,8 +1,8 @@
-import { FC, useCallback, useEffect, useRef } from "react";
-import { Pagination, ScrollArea, Stack } from "@mantine/core";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { Pagination, ScrollArea, Stack, Text, TextInput } from "@mantine/core";
 import { ArticleCard } from "./ArticleCard";
 import { useNews } from "../../hooks/useNews";
-import { useSetState } from "@mantine/hooks";
+import { useDebouncedValue, useInputState, useSetState } from "@mantine/hooks";
 import { IGetAllArticles, IGetTopArticles } from "../../types/interfaces";
 
 export const NewsContainer: FC = () => {
@@ -12,6 +12,10 @@ export const NewsContainer: FC = () => {
 
   const [topProps, setTopProps] = useSetState<IGetTopArticles>({});
   const [allProps, setAllProps] = useSetState<IGetAllArticles>({});
+
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useInputState("");
+  const [debouncedSearch] = useDebouncedValue(search, 500);
 
   const shouldSearchAll = useCallback(
     () =>
@@ -30,28 +34,51 @@ export const NewsContainer: FC = () => {
   };
 
   useEffect(() => {
+    setPage(1);
+    scrollToTop();
+  }, [topProps, allProps, debouncedSearch]);
+
+  useEffect(() => {
     (async () => {
-      if (shouldSearchAll()) await getAllArticles(allProps);
-      else await getTopArticles(topProps);
+      if (shouldSearchAll())
+        await getAllArticles({ ...allProps, q: debouncedSearch, page });
+      else await getTopArticles({ ...topProps, q: debouncedSearch, page });
 
       scrollToTop();
     })();
-  }, [allProps, topProps, getAllArticles, getTopArticles, shouldSearchAll]);
+  }, [allProps, topProps, debouncedSearch, page]);
 
   return (
     <Stack align={"center"} sx={{ height: "100%" }} spacing={"sm"} py={"sm"}>
+      <TextInput
+        placeholder="Digite aqui para pesquisar"
+        label="Pesquisar"
+        radius="md"
+        maxLength={50}
+        value={search}
+        onChange={setSearch}
+        size={"md"}
+        sx={{ width: "40%" }}
+      />
+
       <ScrollArea
-        sx={{ width: "50%" }}
         p={10}
         type="always"
         offsetScrollbars
         // @ts-ignore
         viewportRef={viewport}
+        sx={{ width: "50%" }}
       >
         <Stack spacing={"sm"}>
-          {articles.map((article, i) => (
-            <ArticleCard article={article} key={i} />
-          ))}
+          {articles.length === 0 ? (
+            <Text size={"xl"} color={"white"} my={15} mx={"auto"}>
+              Nenhum resultado encontrado
+            </Text>
+          ) : (
+            articles.map((article, i) => (
+              <ArticleCard article={article} key={i} />
+            ))
+          )}
         </Stack>
       </ScrollArea>
 
@@ -61,8 +88,8 @@ export const NewsContainer: FC = () => {
         total={totalPages}
         boundaries={2}
         siblings={2}
-        initialPage={1}
-        onChange={(page) => setTopProps({ page })}
+        page={page}
+        onChange={(page) => setPage(page)}
       />
     </Stack>
   );
