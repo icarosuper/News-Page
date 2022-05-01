@@ -1,6 +1,6 @@
 import React, {
   createContext,
-  PropsWithChildren,
+  FC,
   useCallback,
   useEffect,
   useMemo,
@@ -22,7 +22,7 @@ interface INewsContext {
 
 export const NewsContext = createContext<INewsContext>({} as INewsContext);
 
-export const NewsProvider: PropsWithChildren<any> = ({ children }: any) => {
+export const NewsProvider: FC = ({ children }: any) => {
   const { openLoading, closeLoading } = useLoading();
   const repository = useMemo(() => new NewsRepository(), []);
 

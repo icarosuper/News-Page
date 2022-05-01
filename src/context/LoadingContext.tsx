@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useState,
-} from "react";
+import React, { createContext, FC, useCallback, useState } from "react";
 
 interface ILoadingContext {
   isLoading: boolean;
@@ -15,7 +10,7 @@ export const LoadingContext = createContext<ILoadingContext>(
   {} as ILoadingContext
 );
 
-export const LoadingProvider: PropsWithChildren<any> = ({ children }: any) => {
+export const LoadingProvider: FC = ({ children }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const openLoading = useCallback(() => setIsLoading(true), [setIsLoading]);
