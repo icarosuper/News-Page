@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Group, Stack } from "@mantine/core";
+import { Accordion, Box, Grid, Group, Stack } from "@mantine/core";
 import { Searchbar } from "./search/Searchbar";
 import { Articles } from "./Articles";
 import { ArticlePagination } from "./search/ArticlePagination";
@@ -9,31 +9,37 @@ import { SourceSelector } from "./search/SourceSelector";
 
 export const NewsContainer: FC = () => {
   return (
-    <Group sx={{ height: "100%" }} py={"md"}>
-      <Stack sx={{ width: "24.5%", height: "100%" }} spacing={"xl"} pl={"xl"}>
-        <LanguageSelector />
-        <SortBySelector />
-        <SourceSelector />
-      </Stack>
+    <Grid sx={{ height: "100%" }} p={"xl"} gutter={50}>
+      <Grid.Col span={12} lg={3}>
+        <Accordion initialItem={-1}>
+          <Accordion.Item label="Filtros">
+            <Stack spacing={"xl"}>
+              <LanguageSelector />
+              <SortBySelector />
+              <SourceSelector />
+            </Stack>
+          </Accordion.Item>
+        </Accordion>
+      </Grid.Col>
 
-      <Group
-        position={"apart"}
-        sx={{
-          height: "100%",
-          width: "50%",
-          flexDirection: "column",
-        }}
-      >
-        <Box sx={{ width: "75%" }}>
-          <Searchbar />
-        </Box>
+      <Grid.Col span={12} lg={6} sx={{ height: "100%" }}>
+        <Group
+          sx={{
+            height: "100%",
+            flexDirection: "column",
+          }}
+        >
+          <Box sx={{ width: "75%" }}>
+            <Searchbar />
+          </Box>
 
-        <Box sx={{ height: "80%" }}>
-          <Articles />
-        </Box>
+          <Box sx={{ maxHeight: "78%" }}>
+            <Articles />
+          </Box>
 
-        <ArticlePagination />
-      </Group>
-    </Group>
+          <ArticlePagination />
+        </Group>
+      </Grid.Col>
+    </Grid>
   );
 };

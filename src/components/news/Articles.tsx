@@ -21,9 +21,9 @@ export const Articles: FC = () => {
       viewportRef={viewport}
       sx={{ height: "100%" }}
     >
-      <Stack spacing={"sm"}>
+      <Stack spacing={"md"}>
         {articles.length === 0 ? (
-          <Text size={"xl"} color={"white"}>
+          <Text size={"xl"} color={"white"} m={"auto"}>
             Nenhum resultado encontrado
           </Text>
         ) : (

@@ -13,10 +13,16 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Box style={{ height: "100vh" }}>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          "@media (min-width: 1200px)": { height: "100vh" },
+          overflow: "hidden",
+        }}
+      >
         <Navbar />
 
-        <Box style={{ height: "93%" }}>
+        <Box style={{ height: "100%" }}>
           <NewsContainer />
         </Box>
       </Box>

@@ -7,8 +7,7 @@ export const ArticlePagination: FC = () => {
 
   return (
     <Pagination
-      size="xl"
-      withEdges
+      size="md"
       total={totalPages}
       boundaries={2}
       siblings={2}
