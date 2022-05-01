@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Box, Group, Stack } from "@mantine/core";
-import { Searchbar } from "./Searchbar";
+import { Searchbar } from "./search/Searchbar";
 import { Articles } from "./Articles";
-import { ArticlePagination } from "./ArticlePagination";
+import { ArticlePagination } from "./search/ArticlePagination";
 
 export const NewsContainer: FC = () => {
   return (

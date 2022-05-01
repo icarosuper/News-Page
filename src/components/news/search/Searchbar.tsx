@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { useDebouncedValue, useInputState } from "@mantine/hooks";
 import { TextInput } from "@mantine/core";
-import { useNews } from "../../hooks/useNews";
+import { useNews } from "../../../hooks/useNews";
 
 export const Searchbar: FC = () => {
   const { search, setSearch } = useNews();

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Pagination } from "@mantine/core";
-import { useNews } from "../../hooks/useNews";
+import { useNews } from "../../../hooks/useNews";
 
 export const ArticlePagination: FC = () => {
   const { totalPages, page, setPage } = useNews();
