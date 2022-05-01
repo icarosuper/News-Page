@@ -1,6 +1,7 @@
 import React, {
   createContext,
   FC,
+  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -20,7 +21,7 @@ import { Languages } from "../types/objects_types";
 
 export const NewsContext = createContext<INewsContext>({} as INewsContext);
 
-export const NewsProvider: FC = ({ children }: any) => {
+export const NewsProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { openLoading, closeLoading } = useLoading();
   const repository = useMemo(() => new NewsRepository(), []);
 

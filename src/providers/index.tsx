@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { NotificationsProvider } from "@mantine/notifications";
 import { MantineProvider } from "@mantine/core";
 import { LoadingProvider } from "../context/LoadingContext";
@@ -7,7 +7,7 @@ import { NewsProvider } from "../context/NewsContext";
 import { baseTheme } from "../styles/baseTheme";
 import { baseStyles } from "../styles/baseStyles";
 
-export const GlobalProvider: FC = ({ children }: any) => {
+export const GlobalProvider: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <MantineProvider theme={baseTheme} styles={baseStyles}>
       <NotificationsProvider>
