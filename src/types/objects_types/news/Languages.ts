@@ -1,0 +1,16 @@
+export const Languages = {
+  AR: { label: "al-ʿarabiyyah", value: "ar" },
+  DE: { label: "Deutsch", value: "de" },
+  EN: { label: "English", value: "en" },
+  ES: { label: "Español", value: "es" },
+  FR: { label: "Français", value: "fr" },
+  HE: { label: "Ivrit", value: "he" },
+  IT: { label: "Italiano ", value: "it" },
+  NL: { label: "Dutch", value: "nl" },
+  NO: { label: "Norsk", value: "no" },
+  PT: { label: "Português", value: "pt" },
+  RU: { label: "Русский язык", value: "ru" },
+  SV: { label: "Svenska", value: "sv" },
+  UD: { label: "UD", value: "ud" },
+  ZH: { label: "汉语", value: "zh" },
+};
