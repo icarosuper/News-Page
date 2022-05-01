@@ -1,12 +1,10 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Select } from "@mantine/core";
 import { Languages } from "../../../types/objects_types";
 import { useNews } from "../../../hooks/useNews";
 
 export const LanguageSelector: FC = () => {
   const { language, setLanguage, selectedSources } = useNews();
-
-  useEffect(() => console.log(selectedSources), [selectedSources]);
 
   return (
     <Select
