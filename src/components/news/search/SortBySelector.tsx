@@ -4,10 +4,11 @@ import { SortTypes } from "../../../types/objects_types";
 import { useNews } from "../../../hooks/useNews";
 
 export const SortBySelector: FC = () => {
-  const { allProps, setAllProps } = useNews();
+  const { allProps, setAllProps, selectedSources, search } = useNews();
 
   return (
     <Select
+      disabled={selectedSources.length === 0 && !search}
       searchable
       clearable
       label={"Filtrar por"}

@@ -41,12 +41,13 @@ export const NewsProvider: FC = ({ children }: any) => {
   });
 
   const shouldSearchAll = () =>
+    !!q ||
     !!allProps.searchIn ||
     !!allProps.domains ||
     !!allProps.excludeDomains ||
     !!allProps.from ||
     !!allProps.to ||
-    !!allProps.sortBy;
+    (!!allProps.sortBy && (!!q || selectedSources.length > 0));
 
   const getSources = useCallback(async () => {
     try {
@@ -90,6 +91,8 @@ export const NewsProvider: FC = ({ children }: any) => {
         const response = await repository.findAll({
           ...props,
           language: props.sources?.length !== 0 ? undefined : props.language,
+          sortBy:
+            props.sources?.length !== 0 || props.q ? props.sortBy : undefined,
         });
 
         setTotalPages(
