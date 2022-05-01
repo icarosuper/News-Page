@@ -9,7 +9,5 @@ export interface IGetAllArticles extends IAbstractGetArticles {
   from?: string;
   to?: string;
 
-  language?: string;
-
-  sortBy?: "relevancy" | "popularity" | "publishedAt";
+  sortBy?: string;
 }

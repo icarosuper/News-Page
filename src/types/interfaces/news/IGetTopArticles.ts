@@ -1,7 +1,7 @@
-import { Country, Category } from "../../types";
+import { Category } from "../../types";
 import { IAbstractGetArticles } from "./IAbstractGetArticles";
 
 export interface IGetTopArticles extends IAbstractGetArticles {
-  country?: Country;
+  country?: string;
   category?: Category;
 }
