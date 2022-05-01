@@ -29,4 +29,26 @@ export const baseStyles: Record<
       borderColor: "#80808078",
     },
   }),
+
+  Select: (theme) => ({
+    label: {
+      fontSize: theme.fontSizes.md,
+    },
+
+    input: {
+      fontSize: theme.fontSizes.md,
+      borderColor: "#80808078",
+    },
+  }),
+
+  MultiSelect: (theme) => ({
+    label: {
+      fontSize: theme.fontSizes.md,
+    },
+
+    input: {
+      fontSize: theme.fontSizes.md,
+      borderColor: "#80808078",
+    },
+  }),
 };

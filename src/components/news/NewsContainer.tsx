@@ -3,11 +3,18 @@ import { Box, Group, Stack } from "@mantine/core";
 import { Searchbar } from "./search/Searchbar";
 import { Articles } from "./Articles";
 import { ArticlePagination } from "./search/ArticlePagination";
+import { LanguageSelector } from "./search/LanguageSelector";
+import { SortBySelector } from "./search/SortBySelector";
+import { SourceSelector } from "./search/SourceSelector";
 
 export const NewsContainer: FC = () => {
   return (
-    <Group position={"apart"} sx={{ height: "100%" }} py={"md"}>
-      <Stack sx={{ width: "22%" }}>a</Stack>
+    <Group sx={{ height: "100%" }} py={"md"}>
+      <Stack sx={{ width: "24.5%", height: "100%" }} spacing={"xl"} pl={"xl"}>
+        <LanguageSelector />
+        <SortBySelector />
+        <SourceSelector />
+      </Stack>
 
       <Group
         position={"apart"}
@@ -27,8 +34,6 @@ export const NewsContainer: FC = () => {
 
         <ArticlePagination />
       </Group>
-
-      <Stack sx={{ width: "22%" }}>a</Stack>
     </Group>
   );
 };
