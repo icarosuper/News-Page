@@ -8,7 +8,7 @@ export const baseStyles: Record<
 > = {
   Button: (theme) => ({
     root: {
-      fontSize: theme.fontSizes.md,
+      fontSize: theme.fontSizes.sm,
       textTransform: "uppercase",
       borderRadius: 10,
       width: "100%",

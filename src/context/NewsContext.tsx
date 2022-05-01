@@ -11,13 +11,33 @@ import { NewsRepository } from "../repositories/NewsRepository";
 import { TArticle } from "../types/types";
 import { IGetAllArticles, IGetTopArticles } from "../types/interfaces";
 import { Source } from "../types/types/news/Source";
+import { useInputState, useSetState } from "@mantine/hooks";
 
 interface INewsContext {
   sources: Source[];
   totalPages: number;
   articles: TArticle[];
-  getAllArticles: (props?: IGetAllArticles) => Promise<void>;
-  getTopArticles: (props?: IGetTopArticles) => Promise<void>;
+
+  page: number;
+  setPage: (page: number) => void;
+
+  topProps: IGetTopArticles;
+  allProps: IGetAllArticles;
+  setTopProps: (
+    statePartial:
+      | Partial<IGetTopArticles>
+      | ((currentState: IGetTopArticles) => Partial<IGetTopArticles>)
+  ) => void;
+  setAllProps: (
+    statePartial:
+      | Partial<IGetAllArticles>
+      | ((currentState: IGetAllArticles) => Partial<IGetAllArticles>)
+  ) => void;
+
+  search: string;
+  setSearch: (
+    value: string | React.ChangeEvent<any> | null | undefined
+  ) => void;
 }
 
 export const NewsContext = createContext<INewsContext>({} as INewsContext);
@@ -27,9 +47,26 @@ export const NewsProvider: FC = ({ children }: any) => {
   const repository = useMemo(() => new NewsRepository(), []);
 
   const pageSize = 10;
+
   const [articles, setArticles] = useState<TArticle[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(1);
   const [sources, setSources] = useState<Source[]>([]);
+  const [topProps, setTopProps] = useSetState<IGetTopArticles>({});
+  const [allProps, setAllProps] = useSetState<IGetAllArticles>({});
+  const [q, setSearch] = useInputState("");
+
+  const shouldSearchAll = useCallback(
+    () =>
+      allProps.searchIn ||
+      allProps.domains ||
+      allProps.excludeDomains ||
+      allProps.from ||
+      allProps.to ||
+      allProps.language ||
+      allProps.sortBy,
+    []
+  );
 
   const getSources = useCallback(async () => {
     try {
@@ -91,9 +128,30 @@ export const NewsProvider: FC = ({ children }: any) => {
     (async () => await getSources())();
   }, [getSources]);
 
+  useEffect(() => {
+    (async () => {
+      if (shouldSearchAll()) await getAllArticles({ ...allProps, q, page });
+      else await getTopArticles({ ...topProps, q, page });
+    })();
+  }, [allProps, topProps, q, page]);
+
+  useEffect(() => setPage(1), [allProps, topProps, q]);
+
   return (
     <NewsContext.Provider
-      value={{ articles, getTopArticles, getAllArticles, sources, totalPages }}
+      value={{
+        page,
+        setPage,
+        setSearch,
+        allProps,
+        setAllProps,
+        topProps,
+        setTopProps,
+        totalPages,
+        articles,
+        sources,
+        search: q,
+      }}
     >
       {children}
     </NewsContext.Provider>
